@@ -1,0 +1,144 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f7f9fa;
+    color: #333;
+}
+
+#text-input-area {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+#source-text {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    resize: vertical;
+}
+
+#start-scroller-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    background-color: #4361ee;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#start-scroller-btn:hover {
+    background-color: #3a56d4;
+}
+
+#start-scroller-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+}
+
+#word-scroller-app {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#word-scroller-viewport {
+    width: 100%;
+    height: calc(6 * 3em); /* 6 visible lines * line height */
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    position: relative;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+#word-scroller-container {
+    position: relative;
+    top: calc(-1 * 3em); /* Offset by 1 slot height to hide the top buffer */
+    transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.word-line {
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25em;
+    box-sizing: border-box;
+    padding: 0 20px;
+    opacity: 1;
+    transition: opacity 0.4s ease-in-out;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 500;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.word-line[data-slot-id="7"].newest-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    color: #4361ee;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* For users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #word-scroller-container {
+        transition: none;
+    }
+    
+    .word-line {
+        transition: opacity 0.1s ease-out;
+    }
+}
+
+/* Make app responsive */
+@media (max-width: 520px) {
+    #text-input-area,
+    #word-scroller-app {
+        width: 90%;
+    }
+    
+    .word-line {
+        font-size: 1.1em;
+        padding: 0 10px;
+    }
+}
