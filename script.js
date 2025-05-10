@@ -261,24 +261,42 @@ document.addEventListener('DOMContentLoaded', function() {
         const cloud = document.createElement('img');
         cloud.src = cloudImages[Math.floor(Math.random() * cloudImages.length)];
         cloud.className = 'cloud';
-        // Set random size (scale)
-        const scale = randomBetween(0.8, 1.8);
-        cloud.style.width = `${160 * scale}px`;
-        cloud.style.height = 'auto';
-        // Compute cloud height (approximate, since image aspect ratio is preserved)
-        const cloudHeight = 80 * scale; // assume base cloud height is 80px
-        // Set random vertical position: halfway up mountain and above, but always on screen
+        
+        // Set vertical position first: halfway up mountain and above, but always on screen
         const vh = window.innerHeight;
         const mountainHeight = vh * 0.4;
-        const minY = Math.max(0, vh - mountainHeight - (vh * 0.25)); // halfway up mountain and higher
-        const maxY = Math.max(0, vh - mountainHeight - (vh * 0.65)); // up to 65% above mountain
-        // Ensure cloud is always fully visible vertically
-        const y = randomBetween(Math.max(0, maxY), Math.min(vh - cloudHeight, minY));
+        const topLimit = Math.max(0, vh - mountainHeight - (vh * 0.65)); // up to 65% above mountain (TOP)
+        const bottomLimit = Math.max(0, vh - mountainHeight - (vh * 0.25)); // halfway up mountain (BOTTOM)
+        
+        // Keep a buffer at top and bottom for a more natural look
+        const adjustedTopLimit = topLimit + 20;
+        const adjustedBottomLimit = bottomLimit - 20;
+        
+        // Ensure cloud is fully visible vertically - randomize within bounds
+        const y = randomBetween(adjustedTopLimit, adjustedBottomLimit);
+        
+        // Calculate distance from top as a percentage (0 = at top, 1 = at bottom)
+        const distanceFromTop = (y - adjustedTopLimit) / (adjustedBottomLimit - adjustedTopLimit);
+        
+        // Size (scale) depends on vertical position - bigger at bottom, smaller at top
+        // Map from 0.6 (top) to 2.4 (bottom) - 20% larger at bottom
+        const scale = 0.6 + (distanceFromTop * 1.8); 
+        
+        // Set width based on scale
+        cloud.style.width = `${160 * scale}px`;
+        cloud.style.height = 'auto';
+        
+        // Compute cloud height (approximate, since image aspect ratio is preserved)
+        const cloudHeight = 80 * scale; // assume base cloud height is 80px
+        
+        // Position cloud
         cloud.style.top = `${y}px`;
         cloud.style.left = '100vw';
         cloud.style.opacity = randomBetween(0.7, 1.0);
-        // Animation duration: slower for bigger clouds
-        const duration = randomBetween(28, 36) * scale; // bigger clouds move slower
+        
+        // Animation duration: faster for closer clouds (bottom clouds)
+        // Map from 60s (top/very slow) to 25s (bottom/fast)
+        const duration = 60 - (distanceFromTop * 35);
         cloud.style.transition = `transform ${duration}s linear, opacity 0.5s`;
         cloudsContainer.appendChild(cloud);
         // Animate
