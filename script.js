@@ -1,7 +1,23 @@
+// Texts for different meditation experiences
+const texts = {
+    'calm-breathing': 'Breathing In I Enjoy My In-Breath Breathing Out I Enjoy My Out-Breath',
+    'kindness': `This is what is done by one skilled in goodness having glimpsed the state of perfect calm let them be honest and upright straightforward and gentle in speech humble and not conceited contented and easily satisfied unburdened with duties and frugal in their ways peaceful and calm and wise and skillful not proud or demanding in nature let them not do the slightest thing that the wise would later correct wishing: in gladness and in safety May all beings be happy! whatever living beings there may be; whether they are weak or strong, excluding none tall or short, big or small, seen or unseen, near or far away born or yet-to-be born May all beings be at ease! let none deceive another or despise any being in any state let none through anger or ill-will wish harm upon another even as a mother protects with her life her child, her only child so with a boundless heart should one cherish all living beings cultivate a limitless heart of goodwill for all throughout the cosmos in all its height depth and breadth a love that is untroubled and beyond hatred and ill-will whether standing or walking, sitting or lying-down as long as we are awake maintain this mindfulness of love this is the noblest way of living Free from wrong views, greed, and sense desires, living in beauty and realizing perfect understanding, those who practice boundless love will certainly transcend birth and death.`
+};
+
+// Cloud animation properties
+const cloudImages = [
+    'static/art/clouds_1.png',
+    'static/art/clouds_2.png',
+    'static/art/clouds_3.png',
+    'static/art/clouds_4.png',
+    'static/art/clouds_5.png',
+    'static/art/clouds_6.png',
+    'static/art/clouds_7.png'
+];
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
-    const sourceText = document.getElementById('source-text');
-    const startScrollerBtn = document.getElementById('start-scroller-btn');
+    const textSwitcherBtn = document.getElementById('text-switcher-btn');
     const wordContainer = document.getElementById('word-scroller-container');
     const wordLineElements = Array.from(document.querySelectorAll('.word-line'));
     const wordSpans = Array.from(document.querySelectorAll('.word-line span'));
@@ -14,10 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let pressTimer = null;
     let scrollInterval = null;
     let isScrolling = false;
-    
-    // Sample text to start with
-    const sampleText = "Breathing In I Enjoy My In-Breath Breathing Out I Enjoy My Out-Breath";
-    sourceText.value = sampleText;
+    let currentTextKey = 'calm-breathing';
     
     // Initialize the application
     function init() {
@@ -28,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wordContainer.style.top = `-${lineHeight}px`;
         
         // Load initial text
-        loadText(sampleText);
+        loadText(texts[currentTextKey]);
         
         // Add event listeners for interactions
         document.body.addEventListener('mousedown', onPressStart);
@@ -37,9 +50,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.addEventListener('touchstart', onPressStart, { passive: true });
         document.body.addEventListener('touchend', onPressEnd);
         
-        // Button event listener
-        startScrollerBtn.addEventListener('click', function() {
-            loadText(sourceText.value);
+        // Text switcher button event listener
+        textSwitcherBtn.addEventListener('click', function() {
+            // Toggle between text options
+            currentTextKey = currentTextKey === 'calm-breathing' ? 'kindness' : 'calm-breathing';
+            
+            // Update button text
+            textSwitcherBtn.textContent = currentTextKey === 'calm-breathing' ? 'Switch to Kindness Text' : 'Switch to Breathing Text';
+            
+            // Load the new text
+            loadText(texts[currentTextKey]);
         });
         
         // Keyboard support
@@ -178,4 +198,60 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the application
     init();
+    
+    // Load the initial calm breathing text
+    loadText(texts['calm-breathing']);
+    
+    // Start cloud animations
+    startClouds();
+    
+    // Cloud animation functions
+    function randomBetween(a, b) {
+        return a + Math.random() * (b - a);
+    }
+
+    function spawnCloud() {
+        const cloudsContainer = document.getElementById('clouds-container');
+        if (!cloudsContainer) return;
+        const cloud = document.createElement('img');
+        cloud.src = cloudImages[Math.floor(Math.random() * cloudImages.length)];
+        cloud.className = 'cloud';
+        // Set random size (scale)
+        const scale = randomBetween(0.8, 1.8);
+        cloud.style.width = `${160 * scale}px`;
+        cloud.style.height = 'auto';
+        // Compute cloud height (approximate, since image aspect ratio is preserved)
+        const cloudHeight = 80 * scale; // assume base cloud height is 80px
+        // Set random vertical position: halfway up mountain and above, but always on screen
+        const vh = window.innerHeight;
+        const mountainHeight = vh * 0.4;
+        const minY = Math.max(0, vh - mountainHeight - (vh * 0.25)); // halfway up mountain and higher
+        const maxY = Math.max(0, vh - mountainHeight - (vh * 0.65)); // up to 65% above mountain
+        // Ensure cloud is always fully visible vertically
+        const y = randomBetween(Math.max(0, maxY), Math.min(vh - cloudHeight, minY));
+        cloud.style.top = `${y}px`;
+        cloud.style.left = '100vw';
+        cloud.style.opacity = randomBetween(0.7, 1.0);
+        // Animation duration: slower for bigger clouds
+        const duration = randomBetween(28, 36) * scale; // bigger clouds move slower
+        cloud.style.transition = `transform ${duration}s linear, opacity 0.5s`;
+        cloudsContainer.appendChild(cloud);
+        // Animate
+        setTimeout(() => {
+            cloud.style.transform = `translateX(-110vw)`;
+        }, 50);
+        // Remove when offscreen
+        setTimeout(() => {
+            cloud.style.opacity = 0;
+            setTimeout(() => cloud.remove(), 500);
+        }, duration * 1000);
+    }
+
+    function startClouds() {
+        function loop() {
+            spawnCloud();
+            setTimeout(loop, randomBetween(2000, 5000));
+        }
+        loop();
+    }
 });

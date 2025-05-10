@@ -1,56 +1,99 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Lexend', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    margin: 0;
-    background-color: #f7f9fa;
+    /* Gradient background from old app */
+    background: linear-gradient(to bottom, #2589fb 0%, #83a4ec 100%);
+    overflow-x: hidden;
     color: #333;
 }
 
-#text-input-area {
+#mountain-bg-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 40vh;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#mountain-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.8;
+    filter: blur(2.5px) brightness(0.93);
+}
+
+#clouds-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.cloud {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+    opacity: 0.9;
+    z-index: 2;
+    transition: opacity 0.5s;
+}
+
+#controls-area {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     max-width: 500px;
+    z-index: 10;
+    position: relative;
 }
 
-#source-text {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-family: inherit;
-    font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    resize: vertical;
-}
-
-#start-scroller-btn {
-    padding: 10px 20px;
+#text-switcher-btn {
+    padding: 12px 24px;
     border-radius: 6px;
     border: none;
     background-color: #4361ee;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+}
+
+#text-switcher-btn:hover {
+    background-color: #3a56d4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#text-switcher-btn:active {
+    transform: translateY(1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#start-scroller-btn:hover {
-    background-color: #3a56d4;
-}
-
-#start-scroller-btn:focus {
+#text-switcher-btn:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #word-scroller-app {
@@ -66,11 +109,10 @@ body {
     width: 100%;
     height: calc(6 * 3em); /* 6 visible lines * line height */
     overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #fff;
+    border: none;
+    background-color: transparent;
     position: relative;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 #word-scroller-container {
@@ -86,25 +128,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25em;
+    font-size: 1.5em;
     box-sizing: border-box;
     padding: 0 20px;
     opacity: 1;
     transition: opacity 0.4s ease-in-out;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-weight: 500;
+    font-weight: 600;
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     width: 100%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .word-line[data-slot-id="7"].newest-visible {
     text-decoration: underline;
     text-underline-offset: 0.15em;
-    color: #4361ee;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(67, 97, 238, 0.9), 0 0 20px rgba(67, 97, 238, 0.7);
+    font-weight: 700;
 }
 
 .visually-hidden {
